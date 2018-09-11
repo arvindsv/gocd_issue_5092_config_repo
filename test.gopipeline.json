@@ -8,7 +8,7 @@
   "materials": [
     {
       "type": "git",
-      "url": "https://github.com/arvindsv/faketime.git"
+      "url": "https://github.com/arvindsv/gocd_issue_5092_material.git"
       }
     ],
   "stages": [
@@ -46,7 +46,7 @@
             "type": "build"
           },
           {
-            "source": "FakeTimeTest.java",
+            "source": "AnotherFile.txt",
             "destination": "coverage",
             "type": "build"
           }
