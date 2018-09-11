@@ -1,0 +1,69 @@
+{
+  "format_version" : 3,
+  "group": "group1",
+  "name": "Build-Pipeline-Stage",
+  "label_template": "${COUNT}",
+  "enable_pipeline_locking" : false,
+  "parameters": [],
+  "materials": [
+      {
+        "type": "dependency",
+        "pipeline": "Test-Pipeline-Stage",
+        "stage": "Test",
+        "name": "project_source"
+      }
+    ],
+  "stages":[
+    {
+      "name": "BuildDockerImage",
+      "fetch_materials": true,
+      "never_cleanup_artifacts": false,
+      "clean_working_directory": false,
+      "approval" : null,
+      "jobs":[
+        {
+          "name": "BuildImage",
+          "run_instance_count" : "all",
+          "environment_variables": [],
+          "timeout": 1,
+          "tasks": [
+            {
+                "type": "fetch",
+                "artifact_origin": "gocd",
+                "run_if": "any",
+                "pipeline": "Test-Pipeline-Stage",
+                "stage": "Test",
+                "job": "RunUnittestAndCoverage-runOnAll-1",
+                "is_source_a_file": true,
+                "source": "project_source/README.md",
+                "destination": ""
+            },
+            {
+                "type": "fetch",
+                "artifact_origin": "gocd",
+                "run_if": "any",
+                "pipeline": "Test-Pipeline-Stage",
+                "stage": "Test",
+                "job": "RunUnittestAndCoverage-runOnAll-1",
+                "is_source_a_file": true,
+                "source": "testoutput/README.md",
+                "destination": ""
+            },
+            {
+                "type":"exec",
+                "run_if": "passed",
+                "on_cancel": null,
+                "command":"echo",
+                "arguments": [
+                 "build",
+                 "-t",
+                 "project_creator",
+                 "."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

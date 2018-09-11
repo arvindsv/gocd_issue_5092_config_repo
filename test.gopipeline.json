@@ -1,0 +1,98 @@
+{
+  "format_version" : 3,
+  "group": "group1",
+  "name": "Test-Pipeline-Stage",
+  "label_template": "${COUNT}",
+  "enable_pipeline_locking" : false,
+  "parameters": [],
+  "materials": [
+    {
+      "type": "git",
+      "url": "https://github.com/arvindsv/faketime.git"
+      }
+    ],
+  "stages": [
+    {
+      "name": "Test",
+      "fetch_materials": true,
+      "never_cleanup_artifacts": false,
+      "clean_working_directory": false,
+      "approval" : null,
+      "jobs": [{
+        "name": "RunUnittestAndCoverage",
+        "run_instance_count" : "all",
+        "environment_variables": [],
+        "timeout": 1,
+        "tabs": [
+           {
+             "name": "coverage",
+             "path": "coverage/coverage.html/index.html"
+           }
+         ],
+        "artifacts": [
+          {
+            "source":"README.md",
+            "destination":"project_source",
+            "type":"build"
+          },
+          {
+            "source": "README.md",
+            "destination": "testoutput",
+            "type": "build"
+          },
+          {
+            "source": "README.md",
+            "destination": "coverage",
+            "type": "build"
+          },
+          {
+            "source": "FakeTimeTest.java",
+            "destination": "coverage",
+            "type": "build"
+          }
+          ],
+        "tasks":[
+          {
+            "type": "exec",
+            "run_if": "passed",
+            "on_cancel": null,
+            "command":"/bin/ls"
+          },
+          {
+           "type":"exec",
+            "run_if": "passed",
+            "on_cancel": null,
+            "command":"echo",
+            "arguments": [
+                "--format",
+                "test_resulto.xml",
+                "--output",
+                "test_result.xml"
+              ]
+            },
+          {
+            "type":"exec",
+            "run_if": "passed",
+            "on_cancel": null,
+            "command": "/bin/ls",
+            "arguments":[
+              "-al"
+            ]
+          },
+          {
+            "type":"exec",
+            "run_if": "passed",
+            "on_cancel": null,
+            "command": "echo",
+            "arguments":[
+              "-cvzf",
+              "project.tar.gz",
+              "/godata/pipelines/Test-Pipeline-Stage"
+            ]
+          }
+          ]
+        }
+      ]
+    }
+  ]
+}

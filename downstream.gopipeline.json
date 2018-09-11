@@ -1,0 +1,53 @@
+{
+  "format_version" : 3,
+  "group": "group1",
+  "name": "Docker-Deployment-Pipeline-Stage",
+  "label_template": "${COUNT}",
+  "enable_pipeline_locking" : false,
+  "parameters": [],
+  "materials": [
+      {
+        "type": "dependency",
+        "pipeline": "Build-Pipeline-Stage",
+        "stage": "BuildDockerImage",
+        "name": "project_source"
+      },
+      {
+        "type": "dependency",
+        "pipeline": "Analyse-Pipeline-Stage",
+        "stage":"BuildDockerImage",
+        "name":"analyse_result"
+      }
+    ],
+  "stages":[
+    {
+      "name": "BuildDockerImage",
+      "fetch_materials": true,
+      "never_cleanup_artifacts": false,
+      "clean_working_directory": false,
+      "approval" : null,
+      "jobs":[
+        {
+          "name": "BuildImage",
+          "run_instance_count" : "all",
+          "environment_variables": [],
+          "timeout": 1,
+          "tasks": [
+            {
+                "type":"exec",
+                "run_if": "passed",
+                "on_cancel": null,
+                "command":"echo",
+                "arguments": [
+                 "build",
+                 "-t",
+                 "project_creator",
+                 "."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
